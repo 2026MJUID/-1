@@ -194,11 +194,10 @@
   resizeStage();
 
   /* ===================================================================
-     3. AUTO-TRANSITION TIMER (첫 화면 페이드인 및 인터랙션 감상 후 다크 스테이지 전환)
+     3. AUTO-TRANSITION TIMER (첫 화면 인트로 후 다크 스테이지 전환)
      =================================================================== */
   let isModalOpen = false;
   let autoTimerId = null;
-  let hasStartedTouchTimer = false;
 
   function scheduleAutoTransition(delayMs) {
     clearTimeout(autoTimerId);
@@ -209,15 +208,13 @@
     }, delayMs);
   }
 
-  // 페이드인(약 2.5초) 후 첫 화면의 숯 인터랙션을 충분히 경험할 수 있도록 5.5초 설정
-  scheduleAutoTransition(5500);
+  // 페이드인 완료 후 의무 대기 시간을 기존 5.5초에서 2.4초로 단축
+  scheduleAutoTransition(2400);
 
   function onUserInteractCover() {
     if (isModalOpen) return;
-    if (!hasStartedTouchTimer) {
-      hasStartedTouchTimer = true;
-      scheduleAutoTransition(CHARCOAL_PARAMS.autoTransitionMs);
-    }
+    // 터치/클릭 시 지체 없이 즉시 다음 씬(다크 스테이지)으로 전환
+    openInfoModal();
   }
 
   /* ===================================================================
@@ -257,7 +254,10 @@
   }
 
   function handlePointerDown(id, clientX, clientY) {
-    onUserInteractCover();
+    if (!isModalOpen) {
+      openInfoModal();
+      return;
+    }
     const now = performance.now();
     const { x, y } = getLocalCoords(clientX, clientY);
     const node = spawnTrailNode(x, y, now, id);
@@ -310,8 +310,18 @@
   }
 
   coverStage.addEventListener('pointerdown', (e) => {
+    if (!isModalOpen) {
+      openInfoModal();
+      return;
+    }
     handlePointerDown(e.pointerId, e.clientX, e.clientY);
-  }, { passive: true });
+  });
+
+  coverStage.addEventListener('click', () => {
+    if (!isModalOpen) {
+      openInfoModal();
+    }
+  });
 
   window.addEventListener('pointermove', (e) => {
     if (activePointers.has(e.pointerId)) {
@@ -514,12 +524,12 @@
     infoModal.setAttribute('aria-hidden', 'false');
     if (themeColorMeta) themeColorMeta.setAttribute('content', '#000000');
 
-    // 검정 배경이 충분히 부드럽고 깊게 스며든 후 첫 씬 텍스트가 우아하게 등장
+    // 검정 배경이 스며들며 첫 씬 텍스트가 경쾌하고 우아하게 등장
     setTimeout(() => {
       if (isModalOpen) {
         showScene(0);
       }
-    }, 650);
+    }, 450);
   }
 
   function closeInfoModal() {
@@ -528,8 +538,7 @@
     infoModal.classList.remove('is-open');
     infoModal.setAttribute('aria-hidden', 'true');
     if (themeColorMeta) themeColorMeta.setAttribute('content', '#ffffff');
-    hasStartedTouchTimer = false;
-    scheduleAutoTransition(4200);
+    scheduleAutoTransition(2500);
   }
 
   closeInfoBtn.addEventListener('click', (e) => {
