@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Inspect Video Frames</title>
+  <style>
+    body { background: #000; color: #fff; font-family: sans-serif; padding: 20px; }
+    canvas { border: 1px solid #444; margin: 10px; max-width: 320px; display: inline-block; }
+  </style>
+</head>
+<body>
+  <h2>Frames of charcoal-lineart-loop.webm</h2>
+  <div id="canvases"></div>
+  <video id="vid" src="assets/charcoal-lineart-loop.webm" muted playsinline style="display:none"></video>
+
+  <script>
+    const vid = document.getElementById('vid');
+    const wrap = document.getElementById('canvases');
+
+    vid.addEventListener('loadedmetadata', async () => {
+      console.log('Duration:', vid.duration, 'Size:', vid.videoWidth, vid.videoHeight);
+      const times = [0.2, 1.0, 2.5, 4.0, 8.0, 15.0];
+      for (const t of times) {
+        vid.currentTime = t;
+        await new Promise(r => vid.onseeked = r);
+        const cvs = document.createElement('canvas');
+        cvs.width = vid.videoWidth / 2;
+        cvs.height = vid.videoHeight / 2;
+        const ctx = cvs.getContext('2d');
+        ctx.drawImage(vid, 0, 0, cvs.width, cvs.height);
+        
+        const label = document.createElement('div');
+        label.textContent = 't = ' + t + 's';
+        const box = document.createElement('div');
+        box.style.display = 'inline-block';
+        box.appendChild(label);
+        box.appendChild(cvs);
+        wrap.appendChild(box);
+      }
+      console.log('ALL FRAMES CAPTURED');
+    });
+  </script>
+</body>
+</html>
