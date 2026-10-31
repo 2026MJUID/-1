@@ -1,0 +1,861 @@
+/* =====================================================================
+   불완전연소 (INCOMPLETE COMBUSTION) — MOBILE INVITATION STYLES
+   - 고정된 화면 위에서 스크롤/스와이프할 때마다 글씨들만 뿅뿅 올라오는 연출
+   ===================================================================== */
+
+@font-face {
+  font-family: 'Paperlogy';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-5Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --black: #000000;
+  --white: #FFFFFF;
+  --font-en: "Montserrat", "Pretendard", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-kr: "Pretendard", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif;
+  --font-paperlogy: 'Paperlogy', "Pretendard", -apple-system, BlinkMacSystemFont, sans-serif;
+  --frame-max-w: 440px;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-pop: cubic-bezier(0.22, 1.15, 0.36, 1);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  background-color: #080808;
+  color: var(--white);
+  font-family: var(--font-kr);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* =====================================================================
+   MAIN MOBILE FRAME
+   ===================================================================== */
+.invitation-frame {
+  position: relative;
+  width: 100%;
+  max-width: var(--frame-max-w);
+  height: 100dvh;
+  margin: 0 auto;
+  background-color: var(--white);
+  overflow: hidden;
+}
+
+/* =====================================================================
+   SCREEN 0 : WHITE COVER STAGE (흰색 배경 + 터치 인터랙션 + 불완전연소)
+   ===================================================================== */
+.cover-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  background-color: var(--white);
+  touch-action: none;
+}
+
+/* 랜딩페이지 배경 이미지 레이어 */
+.cover-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* =====================================================================
+   COVER INTRO FADE-IN (순백의 화면에서 그래픽과 메인로고가 천천히 등장)
+   ===================================================================== */
+@keyframes coverGraphicFadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes coverTitleFadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.cover-bg-img {
+  width: 88%;
+  max-width: 380px;
+  height: auto;
+  aspect-ratio: 637 / 628;
+  object-fit: contain;
+  opacity: 0;
+  transform: translate(-200px, calc(200px - 4.5%)) scale(3);
+  transform-origin: center center;
+  will-change: transform, opacity;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  animation: coverGraphicFadeIn 2.4s cubic-bezier(0.22, 1, 0.36, 1) 0.3s forwards;
+}
+
+#charcoalCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  display: block;
+}
+
+/* 중앙 '불완전연소' 메인 타이틀 */
+.cover-title-wrap {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  pointer-events: none;
+  width: clamp(180px, 56vw, 248px);
+  opacity: 0;
+  will-change: opacity;
+  animation: coverTitleFadeIn 2.2s cubic-bezier(0.22, 1, 0.36, 1) 0.5s forwards;
+}
+
+.cover-main-title {
+  width: 100%;
+  line-height: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.cover-title-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* =====================================================================
+   DARK STORY & INFO STAGE (고정된 검정 화면 위에서 글씨만 뿅뿅 올라오는 구조)
+   ===================================================================== */
+.info-modal {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  background-color: var(--black);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 1.5s cubic-bezier(0.25, 1, 0.3, 1), visibility 1.5s cubic-bezier(0.25, 1, 0.3, 1);
+}
+
+.info-modal.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* 상단 바: 첫 화면(흰 배경 표지)으로 돌아가기 & 페이지 인디케이터 */
+.modal-top-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 25;
+  padding: max(16px, env(safe-area-inset-top, 16px)) 24px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: none;
+}
+
+.modal-close-btn {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px 6px 4px;
+  font-family: var(--font-en);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  color: rgba(255, 255, 255, 0.42);
+  transition: color 0.2s ease;
+}
+
+.modal-close-btn:hover,
+.modal-close-btn:active {
+  color: #FFFFFF;
+}
+
+.modal-close-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.modal-page-dots {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.modal-page-dots .dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.modal-page-dots .dot.is-active {
+  background: #FFFFFF;
+  transform: scale(1.25);
+}
+
+/* 고정된 스테이지: 화면 자체가 스크롤되어 내려가지 않고 제자리에 고정됨 */
+.scenes-stage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  touch-action: none;
+}
+
+.scene {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 32px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.32s ease, visibility 0.32s ease;
+}
+
+.scene.is-active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* =====================================================================
+   STAGGERED POP-UP TEXT EFFECT (글씨만 뿅뿅 올라오는 애니메이션)
+   ===================================================================== */
+.pop-item {
+  opacity: 0;
+  transform: translateY(26px);
+  transition:
+    opacity 0.52s var(--ease-out-expo),
+    transform 0.58s var(--ease-pop);
+  will-change: opacity, transform;
+}
+
+.scene.is-active .pop-item {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 한 장면 안의 줄/블록들이 순차적으로 뿅뿅 올라오도록 딜레이 차등 적용 */
+.scene.is-active .pop-item:nth-child(1) { transition-delay: 0.05s; }
+.scene.is-active .pop-item:nth-child(2) { transition-delay: 0.18s; }
+.scene.is-active .pop-item:nth-child(3) { transition-delay: 0.31s; }
+.scene.is-active .pop-item:nth-child(4) { transition-delay: 0.44s; }
+.scene.is-active .pop-item:nth-child(5) { transition-delay: 0.57s; }
+.scene.is-active .pop-item:nth-child(6) { transition-delay: 0.70s; }
+.scene.is-active .pop-item:nth-child(7) { transition-delay: 0.83s; }
+
+/* 통합 정보 페이지 내부 항목들은 스크롤하여 시야에 들어올 때마다 뿅뿅 올라오도록 설정 */
+.page-unified-info .pop-item {
+  opacity: 0;
+  transform: translateY(28px) scale(0.98);
+  transition:
+    opacity 0.5s var(--ease-out-expo),
+    transform 0.56s var(--ease-pop) !important;
+  transition-delay: 0s !important;
+}
+
+.page-unified-info.is-active .pop-item.is-revealed {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* =====================================================================
+   SCENE 0 : TITLE LOCKUP ON BLACK (불완전연소 흰 박스 + 영문 서브타이틀)
+   ===================================================================== */
+.title-box-lockup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+}
+
+.white-box-logo {
+  width: 39.5%;
+  max-width: 166px;
+  min-width: 132px;
+  background-color: #FFFFFF;
+  padding: 1px 2px;
+  line-height: 0;
+  margin-bottom: 22px;
+}
+
+.white-box-logo svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.title-box-en {
+  font-family: var(--font-kr);
+  font-size: clamp(9px, 2.55vw, 10.5px);
+  font-weight: 300;
+  line-height: 1.42;
+  letter-spacing: -0.01em;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+/* =====================================================================
+   SCENE 1 & 2 : PROLOGUE LEFT & RIGHT
+   ===================================================================== */
+.page-prologue-left {
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 0 7.8%;
+}
+
+.story-block--left {
+  margin-top: 60%;
+  text-align: left;
+  width: 100%;
+}
+
+.page-prologue-right {
+  justify-content: flex-start;
+  align-items: flex-end;
+  padding: 0 7.8%;
+}
+
+.story-block--right {
+  margin-top: 68%;
+  text-align: right;
+  width: 100%;
+}
+
+.story-text {
+  font-family: var(--font-kr);
+  font-size: clamp(14px, 3.95vw, 16.5px);
+  font-weight: 400;
+  line-height: 1.65;
+  letter-spacing: -0.03em;
+  color: #FFFFFF;
+  word-break: keep-all;
+}
+
+.story-text--center {
+  text-align: center;
+  line-height: 1.72;
+}
+
+.story-gap {
+  height: 26px;
+}
+
+/* =====================================================================
+   SCENE 3 : STATEMENT WITH SUBTLE CHARCOAL BACKGROUND
+   ===================================================================== */
+.page-statement {
+  position: absolute;
+}
+
+.statement-bg-charcoal {
+  position: absolute;
+  right: -52%;
+  top: 52%;
+  transform: translateY(-50%) !important;
+  width: 135%;
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity 0.9s ease !important;
+}
+
+.scene.is-active .statement-bg-charcoal {
+  opacity: 0.14;
+}
+
+.statement-bg-charcoal img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.statement-z {
+  position: relative;
+  z-index: 2;
+}
+
+/* =====================================================================
+   SCENE 3 : FORMAL INVITATION (초대의 글 + 숯 벡터 그래픽 배경)
+   ===================================================================== */
+.page-invitation {
+  position: absolute;
+}
+
+.invitation-bg-graphic {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.scene.is-active .invitation-bg-graphic {
+  opacity: 0.38;
+}
+
+.invitation-bg-graphic img {
+  width: 88%;
+  max-width: 380px;
+  height: auto;
+  aspect-ratio: 637 / 628;
+  object-fit: contain;
+  transform: translate(-200px, calc(200px - 4.5%)) scale(3);
+  transform-origin: center center;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.invitation-z {
+  position: relative;
+  z-index: 2;
+}
+
+.center-text-block {
+  text-align: center;
+  width: 100%;
+}
+
+.invitation-text {
+  font-family: var(--font-kr);
+  font-size: clamp(13.5px, 3.85vw, 16px);
+  font-weight: 300;
+  line-height: 1.72;
+  letter-spacing: -0.025em;
+  color: rgba(255, 255, 255, 0.94);
+  text-align: center;
+  word-break: keep-all;
+}
+
+/* =====================================================================
+   SCENE 5 : UNIFIED EXHIBITION INFO PAGE (전시 일시 / 위치 / 오시는 길 / 주차 안내 / 로고)
+   ===================================================================== */
+.page-unified-info {
+  padding: 0;
+  justify-content: flex-start;
+  align-items: stretch;
+  touch-action: pan-y;
+}
+
+.unified-info-scroll {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  padding: 78px 7.5% max(42px, env(safe-area-inset-bottom, 42px));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  scrollbar-width: none;
+}
+
+.unified-info-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.u-info-group {
+  width: 100%;
+  margin-bottom: 54px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.u-info-label {
+  font-family: var(--font-kr);
+  font-size: clamp(10.5px, 2.8vw, 12px);
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.62);
+  margin-bottom: 9px;
+  letter-spacing: 0.02em;
+}
+
+.u-label-map {
+  margin-bottom: 12px;
+}
+
+.u-info-datetime {
+  font-family: var(--font-paperlogy);
+  font-size: clamp(20px, 5.8vw, 24px);
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  color: #FFFFFF;
+}
+
+.u-venue-trigger {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  gap: 2px;
+  padding: 0;
+  transition: opacity 0.2s ease;
+}
+
+.u-venue-trigger:active {
+  opacity: 0.65;
+}
+
+.u-venue-main {
+  font-family: var(--font-paperlogy);
+  font-size: clamp(20px, 5.8vw, 24px);
+  font-weight: 500;
+  line-height: 1.36;
+  letter-spacing: -0.02em;
+  color: #FFFFFF;
+  word-break: keep-all;
+}
+
+.u-venue-addr {
+  font-family: var(--font-paperlogy);
+  font-size: clamp(16.5px, 4.6vw, 19.5px);
+  font-weight: 500;
+  line-height: 1.42;
+  letter-spacing: -0.02em;
+  color: rgba(255, 255, 255, 0.92);
+  word-break: keep-all;
+}
+
+/* 약도 영역 */
+.map-crop-box {
+  width: 100%;
+  aspect-ratio: 870 / 409;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  background-color: #141414;
+}
+
+.map-bw-img {
+  width: 102%;
+  height: auto;
+  display: block;
+  margin-top: -17.2%;
+  margin-left: -1.8%;
+  filter: grayscale(100%);
+  -webkit-filter: grayscale(100%);
+  transition: opacity 0.2s ease;
+}
+
+.map-crop-box:active .map-bw-img {
+  opacity: 0.75;
+}
+
+.subway-guide-text {
+  margin-top: 13px;
+  font-family: var(--font-paperlogy);
+  font-size: clamp(12.5px, 3.4vw, 14px);
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+/* 주차 안내 영역 */
+.u-parking-group {
+  margin-top: 8px;
+  margin-bottom: 68px;
+}
+
+.parking-title {
+  font-family: var(--font-kr);
+  font-size: clamp(10.5px, 2.8vw, 12px);
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.62);
+  margin-bottom: 9px;
+}
+
+.parking-desc {
+  font-family: var(--font-paperlogy);
+  font-size: clamp(12.5px, 3.4vw, 14px);
+  font-weight: 500;
+  line-height: 1.62;
+  letter-spacing: -0.015em;
+  color: rgba(255, 255, 255, 0.9);
+  word-break: keep-all;
+}
+
+.parking-desc + .parking-desc {
+  margin-top: 14px;
+}
+
+/* 하단 명지대학교 & 인더스트리얼디자인전공 로고 영역 */
+.mju-footer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-top: 20px;
+  padding-bottom: 12px;
+}
+
+.mju-logos-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 20px;
+  opacity: 0.92;
+}
+
+.logo-mju-univ {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.mju-emblem-svg {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.mju-univ-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5px;
+}
+
+.mju-univ-main {
+  font-family: var(--font-en);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  color: #FFFFFF;
+}
+
+.mju-univ-sub {
+  font-family: var(--font-en);
+  font-size: 4.5px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.logo-mju-id {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.mju-id-mark {
+  width: 34px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.mju-id-ko {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.mju-ko-univ {
+  font-size: 5.5px;
+  font-weight: 400;
+  line-height: 1.1;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.mju-ko-dept {
+  font-size: 6.5px;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: #FFFFFF;
+}
+
+.mju-en-dept {
+  font-family: var(--font-en);
+  font-size: 3.3px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  line-height: 1.1;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* =====================================================================
+   MINIMAL ACTION SHEET (주소 복사 / 지도 앱 연결)
+   ===================================================================== */
+.map-action-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.28s ease, visibility 0.28s ease;
+}
+
+.map-action-backdrop.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.map-action-sheet {
+  width: 100%;
+  background: #121214;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 18px 18px 0 0;
+  padding: 20px 20px max(24px, env(safe-area-inset-bottom, 24px));
+  transform: translateY(100%);
+  transition: transform 0.34s var(--ease-out-expo);
+}
+
+.map-action-backdrop.is-open .map-action-sheet {
+  transform: translateY(0%);
+}
+
+.map-action-header {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-bottom: 14px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.map-action-venue {
+  font-size: 15px;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.map-action-addr {
+  font-size: 13px;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.map-action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.map-act-btn {
+  width: 100%;
+  padding: 13px 16px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 14px;
+  font-weight: 400;
+  color: #FFFFFF;
+  text-align: center;
+  transition: background 0.2s ease;
+}
+
+.map-act-btn:hover,
+.map-act-btn:active {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.map-act-btn.is-cancel {
+  margin-top: 4px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* =====================================================================
+   TOAST NOTIFICATION
+   ===================================================================== */
+#toast {
+  position: fixed;
+  bottom: 36px;
+  left: 50%;
+  transform: translate(-50%, 40px);
+  z-index: 100;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: rgba(24, 24, 28, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 400;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s ease, transform 0.28s var(--ease-out-expo);
+  white-space: nowrap;
+}
+
+#toast.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}

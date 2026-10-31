@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff" id="themeColorMeta">
+  <title>불완전연소 | 명지대학교 산업디자인전공 제34회 졸업전시</title>
+
+  <!-- Open Graph / Meta -->
+  <meta name="description" content="명지대학교 디자인학부 인더스트리얼디자인전공 제34회 졸업전시 《불완전연소》 모바일 초청장">
+  <meta property="og:title" content="불완전연소 | 명지대학교 산업디자인전공 제34회 졸업전시">
+  <meta property="og:description" content="불꽃이 잦아든 자리에도 열기는 남아 있다. 2026. 11. 18. - 11. 23. 구띠 갤러리">
+  <meta property="og:image" content="assets/charcoal-symbol.png">
+  <meta property="og:type" content="website">
+
+  <!-- Fonts: Montserrat + Pretendard + Paperlogy -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy.css">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Hidden SVG Color-Matrix Filters (file:// 환경 호환용) -->
+  <svg width="0" height="0" style="position:absolute; pointer-events:none;" aria-hidden="true">
+    <defs>
+      <filter id="extractGreyOnWhiteFilter" color-interpolation-filters="sRGB">
+        <feColorMatrix type="matrix" values="
+          0   0.25 0.25 0 0.18
+          0   0.25 0.25 0 0.18
+          0   0.25 0.25 0 0.20
+          0   0.75 0.75 0 0
+        " />
+      </filter>
+      <filter id="extractRedFilter" color-interpolation-filters="sRGB">
+        <feColorMatrix type="matrix" values="
+          1.05 0    0    0 0
+          0    0.06 0    0 0
+          0    0    0.06 0 0
+          3.2 -1.6 -1.6  0 0
+        " />
+      </filter>
+    </defs>
+  </svg>
+
+  <div class="invitation-frame" id="appFrame">
+
+    <!-- =================================================================
+         SCREEN 0 : WHITE COVER STAGE (흰색 배경 + 숯 터치 인터랙션)
+         3.5~4초 정도 인터랙션 경험 후 자동으로 다크 본문 화면으로 전환됨
+         ================================================================= -->
+    <section class="cover-stage" id="coverStage" aria-label="불완전연소 인터랙티브 표지">
+
+      <!-- 랜딩페이지 배경 이미지 (숯 나이테 벡터 그래픽) -->
+      <div class="cover-bg" aria-hidden="true">
+        <img src="assets/landing-bg.svg" alt="불완전연소 숯 벡터 그래픽 배경" id="coverBgImg" class="cover-bg-img" draggable="false" />
+      </div>
+
+      <!-- Fixed Hidden Charcoal Touch Canvas -->
+      <canvas id="charcoalCanvas" aria-hidden="true"></canvas>
+
+      <!-- 중앙 '불완전연소' 타이틀 (순수 검정 벡터 로고) -->
+      <div class="cover-title-wrap">
+        <h1 class="cover-main-title" aria-label="불완전연소">
+          <svg class="cover-title-svg" viewBox="0 0 556.322 110.089" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g fill="#000000">
+              <path d="M8.396 39.969L8.396 1.711L21.054 1.711L21.054 11.24L84.912 11.24L84.912 1.711L97.57 1.711L97.57 39.969L8.396 39.969ZM84.912 20.627L21.054 20.627L21.054 30.298L84.912 30.298L84.912 20.627ZM59.312 67.133L97.854 67.133L97.854 92.022L20.627 92.022L20.627 100.129L99.561 100.129L99.561 109.089L8.112 109.089L8.112 84.058L85.338 84.058L85.338 76.093L7.827 76.093L7.827 67.133L46.512 67.133L46.512 57.889L1.001 57.889L1.001 47.791L104.823 47.791L104.823 57.889L59.312 57.889L59.312 67.133Z"/>
+              <path d="M222.426 43.24L208.346 43.24L208.346 84.2L195.403 84.2L195.403 1.142L208.346 1.142L208.346 30.582L222.426 30.582L222.426 43.24ZM187.012 66.849C180.755 69.693 169.519 71.115 153.306 71.115L113.626 71.115L113.626 59.88L141.928 59.88L141.928 47.222C134.343 46.274 128.275 43.761 123.723 39.684C119.267 35.607 117.039 30.487 117.039 24.324C117.039 19.678 118.319 15.601 120.879 12.093C123.534 8.585 127.232 5.883 131.972 3.987C136.713 1.995 142.165 1 148.328 1C154.491 1 159.943 1.995 164.683 3.987C169.424 5.883 173.075 8.585 175.635 12.093C178.289 15.601 179.617 19.678 179.617 24.324C179.617 30.582 177.341 35.749 172.79 39.827C168.334 43.904 162.313 46.369 154.728 47.222L154.728 59.88C169.898 59.88 180.66 58.458 187.012 55.613L187.012 66.849ZM129.555 24.324C129.555 28.212 131.214 31.341 134.532 33.711C137.946 36.081 142.544 37.267 148.328 37.267C154.112 37.267 158.663 36.129 161.981 33.853C165.395 31.483 167.101 28.307 167.101 24.324C167.101 20.437 165.395 17.308 161.981 14.938C158.663 12.567 154.112 11.382 148.328 11.382C142.639 11.382 138.088 12.567 134.675 14.938C131.261 17.308 129.555 20.437 129.555 24.324ZM211.048 97.427L211.048 109.089L121.021 109.089L121.021 79.364L133.963 79.364L133.963 97.427L211.048 97.427Z"/>
+              <path d="M311.584 1.142L324.384 1.142L324.384 82.351L311.584 82.351L311.584 38.547L291.957 38.547L291.957 26.742L311.584 26.742L311.584 1.142ZM262.802 42.529C259.199 49.45 254.411 55.044 248.437 59.311C242.559 63.578 235.874 66.09 228.384 66.849L228.384 54.475C236.823 53.243 243.554 49.118 248.58 42.102C253.7 35.086 256.591 26.173 257.255 15.364L229.664 15.364L229.664 3.702L295.94 3.702L295.94 15.364L270.055 15.364C269.96 20.958 269.154 26.268 267.637 31.293L299.068 56.182L291.815 65.995L262.802 42.529ZM326.517 109.089L235.495 109.089L235.495 73.96L248.58 73.96L248.58 96.858L326.517 96.858L326.517 109.089Z"/>
+              <path d="M424.351 25.32L407.285 25.32L406.431 13.373L424.351 13.373L424.351 1.142L437.009 1.142L437.009 82.351L424.351 82.351L424.351 54.76L406.431 54.76L407.285 42.813L424.351 42.813L424.351 25.32ZM404.013 33.995C404.013 40.158 402.686 45.658 400.031 50.493C397.471 55.329 393.726 59.121 388.796 61.871C383.96 64.526 378.271 65.853 371.729 65.853C365.187 65.853 359.451 64.526 354.52 61.871C349.685 59.121 345.939 55.329 343.285 50.493C340.725 45.658 339.445 40.158 339.445 33.995C339.445 27.832 340.725 22.333 343.285 17.498C345.939 12.662 349.685 8.917 354.52 6.262C359.451 3.512 365.187 2.138 371.729 2.138C378.271 2.138 383.96 3.512 388.796 6.262C393.726 8.917 397.471 12.662 400.031 17.498C402.686 22.333 404.013 27.832 404.013 33.995ZM352.102 33.995C352.102 40.253 353.856 45.231 357.365 48.929C360.968 52.627 365.756 54.475 371.729 54.475C377.702 54.475 382.443 52.627 385.951 48.929C389.459 45.231 391.213 40.253 391.213 33.995C391.213 27.738 389.459 22.76 385.951 19.062C382.443 15.364 377.702 13.515 371.729 13.515C365.756 13.515 360.968 15.364 357.365 19.062C353.856 22.76 352.102 27.738 352.102 33.995ZM439.142 109.089L349.4 109.089L349.4 73.107L362.342 73.107L362.342 96.858L439.142 96.858L439.142 109.089Z"/>
+              <path d="M502.132 37.267C496.158 46.748 488.905 54.286 480.372 59.88C471.838 65.379 462.878 68.129 453.492 68.129L453.492 55.329C460.887 55.329 467.951 52.958 474.683 48.218C481.415 43.477 487.151 36.982 491.892 28.733C496.727 20.484 499.998 11.382 501.705 1.427L514.932 3.844C513.32 12.093 510.997 19.631 507.963 26.458L553.19 57.747L546.363 68.413L502.132 37.267ZM555.323 92.591L555.323 105.249L451.501 105.249L451.501 92.591L496.87 92.591L496.87 62.582L509.812 62.582L509.812 92.591L555.323 92.591Z"/>
+            </g>
+          </svg>
+        </h1>
+      </div>
+
+    </section>
+
+    <!-- =================================================================
+         DARK STORY & INFO STAGE (고정된 검정 화면 위에서 글씨만 뿅뿅 올라오는 연출)
+         ================================================================= -->
+    <div class="info-modal" id="infoModal" aria-hidden="true">
+
+      <!-- 상단 바: 첫 화면(흰 배경 표지)으로 돌아가기 & 페이지 인디케이터 -->
+      <div class="modal-top-bar">
+        <button type="button" class="modal-close-btn" id="closeInfoBtn" aria-label="표지로 돌아가기">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>COVER</span>
+        </button>
+
+        <div class="modal-page-dots" id="modalPageDots" aria-hidden="true">
+          <span class="dot is-active" data-idx="0"></span>
+          <span class="dot" data-idx="1"></span>
+          <span class="dot" data-idx="2"></span>
+          <span class="dot" data-idx="3"></span>
+          <span class="dot" data-idx="4"></span>
+        </div>
+      </div>
+
+      <!-- 고정된 스테이지 위에서 각 장면(Scene)의 글씨들만 순차적으로 뿅뿅 올라옴 -->
+      <div class="scenes-stage" id="scenesStage">
+
+        <!-- SCENE 0 : PROLOGUE LEFT (불꽃이 잦아든 자리에도...) -->
+        <section class="scene page-prologue-left is-active" data-scene="0">
+          <div class="story-block story-block--left">
+            <p class="story-text pop-item">불꽃이 잦아든 자리에도 열기는 남아 있다.</p>
+            <div class="story-gap"></div>
+            <p class="story-text pop-item">검게 그을린 표면 아래,</p>
+            <p class="story-text pop-item">다시 타오를 순간을 품은 숯처럼.</p>
+          </div>
+        </section>
+
+        <!-- SCENE 1 : PROLOGUE RIGHT (수없이 묻고 망설이며...) -->
+        <section class="scene page-prologue-right" data-scene="1">
+          <div class="story-block story-block--right">
+            <p class="story-text pop-item">수없이 묻고 망설이며 지나온 날들.</p>
+            <p class="story-text pop-item">뜻대로 타오르지 못한 순간에도</p>
+            <p class="story-text pop-item">우리는 무언가를 만들고, 지우고, 다시 시도했다.</p>
+            <div class="story-gap"></div>
+            <p class="story-text pop-item">그 시간은 저마다의 결로 남았고,</p>
+            <p class="story-text pop-item">미처 펼치지 못한 가능성은 우리 안에 열기로 쌓였다.</p>
+          </div>
+        </section>
+
+        <!-- SCENE 2 : STATEMENT (《불완전연소》는 그 안에...) -->
+        <section class="scene page-statement" data-scene="2">
+          <div class="center-text-block statement-z">
+            <p class="story-text story-text--center pop-item">《불완전연소》는 그 안에 남아 있는 힘을 바라본다.</p>
+            <div class="story-gap"></div>
+            <p class="story-text story-text--center pop-item">아직 다 타지 않았기에,</p>
+            <p class="story-text story-text--center pop-item">우리는 언제든 새로운 불씨와 만나 다시 타오를 수 있다.</p>
+          </div>
+        </section>
+
+        <!-- SCENE 3 : FORMAL INVITATION (명지대학교 디자인학부 인더스트리얼디자인전공의...) -->
+        <section class="scene page-invitation" data-scene="3">
+          <!-- 첫화면과 동일한 숯 벡터 그래픽 배경 레이어 -->
+          <div class="invitation-bg-graphic" aria-hidden="true">
+            <img src="assets/landing-bg.svg" alt="" draggable="false" />
+          </div>
+          <div class="center-text-block invitation-z">
+            <p class="invitation-text pop-item">명지대학교 디자인학부 인더스트리얼디자인전공의</p>
+            <p class="invitation-text pop-item">제34회 졸업전시 &lt;불완전연소&gt;에 초대합니다.</p>
+            <div class="story-gap"></div>
+            <p class="invitation-text pop-item">많은 관심과 격려 부탁드립니다.</p>
+          </div>
+        </section>
+
+        <!-- SCENE 4 : UNIFIED EXHIBITION INFO PAGE (전시 일시 / 위치 / 오시는 길 / 주차 안내 / 로고) -->
+        <section class="scene page-unified-info" data-scene="4">
+          <div class="unified-info-scroll" id="unifiedInfoScroll">
+
+            <!-- 전시 일시 -->
+            <div class="u-info-group pop-item">
+              <div class="u-info-label">전시 일시</div>
+              <div class="u-info-datetime">
+                2026. 11. 18. - 11. 23.<br>
+                11am - 6pm
+              </div>
+            </div>
+
+            <!-- 위치 -->
+            <div class="u-info-group pop-item">
+              <div class="u-info-label">위치</div>
+              <button type="button" class="u-venue-trigger" id="venueCopyTrigger" title="터치하여 주소 복사 또는 지도 열기">
+                <span class="u-venue-main">구띠 갤러리</span>
+                <span class="u-venue-addr">서울 서초구 서초대로38길 15</span>
+              </button>
+            </div>
+
+            <!-- 오시는 길 -->
+            <div class="u-info-group pop-item">
+              <div class="u-info-label u-label-map">오시는 길</div>
+              <div class="map-crop-box" id="mapInteractiveBox" role="button" tabindex="0" aria-label="약도 터치하여 지도 앱 열기 또는 주소 복사">
+                <img src="assets/map.svg" alt="구띠갤러리 약도" class="map-bw-img" draggable="false" />
+              </div>
+              <p class="subway-guide-text">서초역 3,4번 출구에서 도보 3분</p>
+            </div>
+
+            <!-- 주차 안내 -->
+            <div class="u-info-group u-parking-group pop-item">
+              <h3 class="parking-title">주차 안내</h3>
+              <p class="parking-desc">
+                전시장 내 주차가 불가함으로 대중교통 이용 부탁드립니다.
+              </p>
+              <p class="parking-desc">
+                자차 이용시 전시장 옆 SSI Art&amp;Design 유료 주차장 등<br>
+                주변 주차장 이용부탁드립니다.
+              </p>
+            </div>
+
+            <!-- Bottom Logos: MYONGJI UNIVERSITY & MJU ID -->
+            <footer class="mju-footer pop-item">
+              <div class="mju-logos-lockup" aria-label="명지대학교 인더스트리얼디자인전공">
+                <div class="logo-mju-univ">
+                  <svg class="mju-emblem-svg" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="18" cy="18" r="16.2" stroke="white" stroke-width="0.9" stroke-dasharray="1.5 1.5"/>
+                    <circle cx="18" cy="18" r="12.5" stroke="white" stroke-width="0.8"/>
+                    <path d="M18 8.5V27.5M18 13L13 9.5M18 13L23 9.5M18 17.5L11.5 14M18 17.5L24.5 14M18 22L12.5 19M18 22L23.5 19" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+                  </svg>
+                  <div class="mju-univ-text">
+                    <span class="mju-univ-main">MYONGJI</span>
+                    <span class="mju-univ-sub">U N I V E R S I T Y</span>
+                  </div>
+                </div>
+
+                <div class="logo-mju-id">
+                  <svg class="mju-id-mark" viewBox="0 0 58 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <text x="0" y="15" fill="white" font-family="Montserrat, sans-serif" font-size="14" font-weight="500" letter-spacing="0.5">MJU</text>
+                    <path d="M19 31L36 4" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+                    <text x="27" y="30" fill="white" font-family="Montserrat, sans-serif" font-size="14" font-weight="600">ID</text>
+                  </svg>
+                  <div class="mju-id-ko">
+                    <span class="mju-ko-univ">명지대학교</span>
+                    <span class="mju-ko-dept">인더스트리얼디자인전공</span>
+                    <span class="mju-en-dept">DEPARTMENT OF INDUSTRIAL DESIGN</span>
+                  </div>
+                </div>
+              </div>
+            </footer>
+
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+    <!-- =================================================================
+         MINIMAL ACTION POPUP (주소 복사 / 네이버 지도 / 카카오맵 연결)
+         ================================================================= -->
+    <div class="map-action-backdrop" id="mapActionBackdrop" aria-hidden="true">
+      <div class="map-action-sheet" role="dialog" aria-label="위치 및 지도 메뉴">
+        <div class="map-action-header">
+          <span class="map-action-venue">구띠 갤러리</span>
+          <span class="map-action-addr">서울 서초구 서초대로38길 15</span>
+        </div>
+        <div class="map-action-buttons">
+          <button type="button" class="map-act-btn" id="btnCopyAddress">주소 복사하기</button>
+          <a
+            href="https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%20%EC%84%9C%EC%B4%88%EA%B5%AC%20%EC%84%9C%EC%B4%88%EB%8C%80%EB%A1%9C38%EA%B8%B8%2015"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="map-act-btn"
+          >네이버 지도 열기</a>
+          <a
+            href="https://map.kakao.com/link/search/%EC%84%9C%EC%9A%B8%20%EC%84%9C%EC%B4%88%EA%B5%AC%20%EC%84%9C%EC%B4%88%EB%8C%80%EB%A1%9C38%EA%B8%B8%2015"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="map-act-btn"
+          >카카오맵 열기</a>
+          <button type="button" class="map-act-btn is-cancel" id="btnCloseAction">닫기</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Minimal Toast Notification -->
+  <div id="toast" role="status" aria-live="polite">
+    <span id="toastMsg">주소가 복사되었습니다.</span>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
