@@ -166,13 +166,20 @@
   }
 
   function resizeStage() {
+    const vp = window.visualViewport;
+    const rawH = vp ? vp.height : window.innerHeight;
+    const rawW = vp ? vp.width : window.innerWidth;
+
+    document.documentElement.style.setProperty('--app-w', `${rawW}px`);
+    document.documentElement.style.setProperty('--app-h', `${rawH}px`);
+
     const rect = appFrame.getBoundingClientRect();
-    viewW = rect.width;
-    viewH = rect.height;
+    viewW = rect.width || rawW;
+    viewH = rect.height || rawH;
     dpr = Math.min(2, window.devicePixelRatio || 1);
 
-    const pw = Math.round(viewW * dpr);
-    const ph = Math.round(viewH * dpr);
+    const pw = Math.max(1, Math.round(viewW * dpr));
+    const ph = Math.max(1, Math.round(viewH * dpr));
 
     charcoalCanvas.width = pw;
     charcoalCanvas.height = ph;
@@ -181,16 +188,23 @@
     compCanvas.width = pw;
     compCanvas.height = ph;
 
+    const minDim = Math.min(viewW, viewH);
     const diameter = Math.max(
-      CHARCOAL_PARAMS.minDiameter,
-      Math.min(CHARCOAL_PARAMS.maxDiameter, viewW * CHARCOAL_PARAMS.diameterRatio)
+      120,
+      Math.min(CHARCOAL_PARAMS.maxDiameter, minDim * CHARCOAL_PARAMS.diameterRatio)
     );
     brushRadius = diameter / 2;
 
     rebuildFixedScreenLayers();
   }
 
-  window.addEventListener('resize', resizeStage);
+  window.addEventListener('resize', resizeStage, { passive: true });
+  window.addEventListener('orientationchange', () => {
+    setTimeout(resizeStage, 120);
+  }, { passive: true });
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', resizeStage, { passive: true });
+  }
   resizeStage();
 
   /* ===================================================================
@@ -468,12 +482,15 @@
   function checkInfoItemsReveal() {
     if (currentScene !== LAST_SCENE || !unifiedInfoScroll) return;
     const containerRect = unifiedInfoScroll.getBoundingClientRect();
+    const isAtBottom =
+      unifiedInfoScroll.scrollTop + unifiedInfoScroll.clientHeight >=
+      unifiedInfoScroll.scrollHeight - 16;
     let delayIdx = 0;
 
     infoPopItems.forEach((item) => {
       const rect = item.getBoundingClientRect();
-      // 화면 하단 기준 88% 안쪽으로 들어오면 뿅 올라오도록 처리
-      if (rect.top < containerRect.bottom - containerRect.height * 0.08) {
+      // 화면 하단 기준 92% 안쪽으로 들어오거나 스크롤 최하단에 도달하면 뿅 올라오도록 처리
+      if (isAtBottom || rect.top < containerRect.bottom - containerRect.height * 0.06) {
         if (!item.classList.contains('is-revealed')) {
           const d = delayIdx * 130;
           delayIdx++;
@@ -489,6 +506,7 @@
 
   if (unifiedInfoScroll) {
     unifiedInfoScroll.addEventListener('scroll', checkInfoItemsReveal, { passive: true });
+    window.addEventListener('resize', checkInfoItemsReveal, { passive: true });
   }
 
   function showScene(nextIdx) {

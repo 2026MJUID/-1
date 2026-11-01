@@ -17,7 +17,10 @@
   --font-en: "Montserrat", "Pretendard", -apple-system, BlinkMacSystemFont, sans-serif;
   --font-kr: "Pretendard", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif;
   --font-paperlogy: 'Paperlogy', "Pretendard", -apple-system, BlinkMacSystemFont, sans-serif;
-  --frame-max-w: 440px;
+  --frame-max-w: 480px;
+  --app-w: 100vw;
+  --app-h: 100dvh;
+  --unit-w: min(100vw, var(--frame-max-w));
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-pop: cubic-bezier(0.22, 1.15, 0.36, 1);
 }
@@ -31,6 +34,7 @@
 html, body {
   width: 100%;
   height: 100%;
+  height: 100dvh;
   overflow: hidden;
   overscroll-behavior: none;
   background-color: #080808;
@@ -39,6 +43,8 @@ html, body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
   user-select: none;
   -webkit-user-select: none;
 }
@@ -57,16 +63,28 @@ a {
 }
 
 /* =====================================================================
-   MAIN MOBILE FRAME
+   MAIN MOBILE FRAME (모든 모바일 해상도 대응 컨테이너)
    ===================================================================== */
 .invitation-frame {
   position: relative;
   width: 100%;
   max-width: var(--frame-max-w);
+  height: 100vh;
   height: 100dvh;
+  height: var(--app-h, 100dvh);
   margin: 0 auto;
   background-color: var(--white);
   overflow: hidden;
+  container-type: size;
+  container-name: invitation;
+}
+
+/* 모바일/태블릿 터치 디바이스에서는 화면 가로폭 제한 없이 기기 해상도에 100% 밀착 */
+@media (hover: none) and (pointer: coarse) and (max-width: 768px) {
+  :root {
+    --frame-max-w: 100vw;
+    --unit-w: 100vw;
+  }
 }
 
 /* =====================================================================
@@ -117,13 +135,14 @@ a {
 }
 
 .cover-bg-img {
-  width: 88%;
-  max-width: 380px;
+  width: min(88%, 88cqw);
+  max-height: 75cqh;
   height: auto;
   aspect-ratio: 637 / 628;
   object-fit: contain;
   opacity: 0;
-  transform: translate(-200px, calc(200px - 4.5%)) scale(3);
+  /* 고정 px(-200px) 대신 이미지 자체 크기 비율(%)을 사용하여 모든 해상도에서 동일한 구도 유지 */
+  transform: translate(-58.3%, 53.8%) scale(3);
   transform-origin: center center;
   will-change: transform, opacity;
   pointer-events: none;
@@ -161,7 +180,7 @@ a {
 /* 메인 로고 뒤의 흰색 사각형 박스 (로고 사이즈보다 아주 조금 큰 미니멀 박스) */
 .cover-logo-box {
   background-color: var(--white);
-  padding: clamp(3px, 1vw, 5px) clamp(5px, 1.6vw, 8px);
+  padding: clamp(2.5px, 1cqw, 5px) clamp(4px, 1.6cqw, 8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -169,7 +188,8 @@ a {
 }
 
 .cover-main-title {
-  width: clamp(180px, 56vw, 248px);
+  width: clamp(148px, calc(var(--unit-w) * 0.56), 260px);
+  width: clamp(148px, 56cqw, 260px);
   line-height: 0;
   display: flex;
   justify-content: center;
@@ -210,7 +230,11 @@ a {
   left: 0;
   right: 0;
   z-index: 25;
-  padding: max(16px, env(safe-area-inset-top, 16px)) 24px 12px;
+  padding:
+    max(14px, env(safe-area-inset-top, 14px))
+    max(clamp(16px, 6cqw, 26px), env(safe-area-inset-right, 16px))
+    12px
+    max(clamp(16px, 6cqw, 26px), env(safe-area-inset-left, 16px));
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -224,7 +248,7 @@ a {
   gap: 4px;
   padding: 6px 10px 6px 4px;
   font-family: var(--font-en);
-  font-size: 10px;
+  font-size: clamp(9.5px, 2.6cqw, 11px);
   font-weight: 400;
   letter-spacing: 0.16em;
   color: rgba(255, 255, 255, 0.42);
@@ -279,7 +303,11 @@ a {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 32px;
+  padding:
+    max(54px, calc(env(safe-area-inset-top, 16px) + 38px))
+    max(clamp(18px, 7.5cqw, 36px), env(safe-area-inset-right, 18px))
+    max(28px, env(safe-area-inset-bottom, 28px))
+    max(clamp(18px, 7.5cqw, 36px), env(safe-area-inset-left, 18px));
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -347,11 +375,11 @@ a {
 .white-box-logo {
   width: 39.5%;
   max-width: 166px;
-  min-width: 132px;
+  min-width: 116px;
   background-color: #FFFFFF;
   padding: 1px 2px;
   line-height: 0;
-  margin-bottom: 22px;
+  margin-bottom: clamp(16px, 2.8cqh, 22px);
 }
 
 .white-box-logo svg {
@@ -362,7 +390,7 @@ a {
 
 .title-box-en {
   font-family: var(--font-kr);
-  font-size: clamp(9px, 2.55vw, 10.5px);
+  font-size: clamp(9px, 2.55cqw, 10.5px);
   font-weight: 300;
   line-height: 1.42;
   letter-spacing: -0.01em;
@@ -375,11 +403,17 @@ a {
 .page-prologue-left {
   justify-content: flex-start;
   align-items: flex-start;
-  padding: 0 7.8%;
+  padding:
+    0
+    max(7.8%, env(safe-area-inset-right, 0px))
+    max(24px, env(safe-area-inset-bottom, 24px))
+    max(7.8%, env(safe-area-inset-left, 0px));
 }
 
 .story-block--left {
-  margin-top: 60%;
+  /* 화면 높이(cqh/dvh)에 비례하여 짧은 기기~긴 기기 모두 자연스러운 상단 여백 유지 */
+  margin-top: clamp(120px, 28vh, 300px);
+  margin-top: clamp(110px, 28cqh, 300px);
   text-align: left;
   width: 100%;
 }
@@ -387,23 +421,31 @@ a {
 .page-prologue-right {
   justify-content: flex-start;
   align-items: flex-end;
-  padding: 0 7.8%;
+  padding:
+    0
+    max(7.8%, env(safe-area-inset-right, 0px))
+    max(24px, env(safe-area-inset-bottom, 24px))
+    max(7.8%, env(safe-area-inset-left, 0px));
 }
 
 .story-block--right {
-  margin-top: 68%;
+  margin-top: clamp(130px, 31vh, 330px);
+  margin-top: clamp(120px, 31cqh, 330px);
   text-align: right;
   width: 100%;
 }
 
 .story-text {
   font-family: var(--font-kr);
-  font-size: clamp(14px, 3.95vw, 16.5px);
+  /* 280px 초소형 화면부터 480px 대형 화면까지 한 줄 호흡이 깨지지 않도록 유동 스케일링 */
+  font-size: clamp(11.5px, calc(var(--unit-w) * 0.0385), 16.5px);
+  font-size: clamp(11.5px, 3.85cqw, 16.5px);
   font-weight: 400;
   line-height: 1.65;
   letter-spacing: -0.03em;
   color: #FFFFFF;
   word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 .story-text--center {
@@ -412,7 +454,7 @@ a {
 }
 
 .story-gap {
-  height: 26px;
+  height: clamp(16px, 3.2cqh, 26px);
 }
 
 /* =====================================================================
@@ -473,12 +515,12 @@ a {
 }
 
 .invitation-bg-graphic img {
-  width: 88%;
-  max-width: 380px;
+  width: min(88%, 88cqw);
+  max-height: 75cqh;
   height: auto;
   aspect-ratio: 637 / 628;
   object-fit: contain;
-  transform: translate(-200px, calc(200px - 4.5%)) scale(3);
+  transform: translate(-58.3%, 53.8%) scale(3);
   transform-origin: center center;
   pointer-events: none;
   user-select: none;
@@ -497,13 +539,15 @@ a {
 
 .invitation-text {
   font-family: var(--font-kr);
-  font-size: clamp(13.5px, 3.85vw, 16px);
+  font-size: clamp(11.5px, calc(var(--unit-w) * 0.038), 16px);
+  font-size: clamp(11.5px, 3.8cqw, 16px);
   font-weight: 300;
   line-height: 1.72;
   letter-spacing: -0.025em;
   color: rgba(255, 255, 255, 0.94);
   text-align: center;
   word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 /* =====================================================================
@@ -523,7 +567,11 @@ a {
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: contain;
-  padding: 78px 7.5% max(42px, env(safe-area-inset-bottom, 42px));
+  padding:
+    max(clamp(62px, 9.5cqh, 82px), calc(env(safe-area-inset-top, 16px) + 48px))
+    max(7.5%, env(safe-area-inset-right, 18px))
+    max(clamp(32px, 5cqh, 46px), env(safe-area-inset-bottom, 36px))
+    max(7.5%, env(safe-area-inset-left, 18px));
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -536,7 +584,7 @@ a {
 
 .u-info-group {
   width: 100%;
-  margin-bottom: 54px;
+  margin-bottom: clamp(34px, 6.4cqh, 54px);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -544,20 +592,22 @@ a {
 
 .u-info-label {
   font-family: var(--font-kr);
-  font-size: clamp(10.5px, 2.8vw, 12px);
+  font-size: clamp(10px, calc(var(--unit-w) * 0.028), 12.5px);
+  font-size: clamp(10px, 2.8cqw, 12.5px);
   font-weight: 300;
   color: rgba(255, 255, 255, 0.62);
-  margin-bottom: 9px;
+  margin-bottom: clamp(6px, 1.1cqh, 10px);
   letter-spacing: 0.02em;
 }
 
 .u-label-map {
-  margin-bottom: 12px;
+  margin-bottom: clamp(8px, 1.4cqh, 12px);
 }
 
 .u-info-datetime {
   font-family: var(--font-paperlogy);
-  font-size: clamp(20px, 5.8vw, 24px);
+  font-size: clamp(17.5px, calc(var(--unit-w) * 0.056), 24px);
+  font-size: clamp(17.5px, 5.6cqw, 24px);
   font-weight: 500;
   line-height: 1.4;
   letter-spacing: -0.01em;
@@ -580,7 +630,8 @@ a {
 
 .u-venue-main {
   font-family: var(--font-paperlogy);
-  font-size: clamp(20px, 5.8vw, 24px);
+  font-size: clamp(17.5px, calc(var(--unit-w) * 0.056), 24px);
+  font-size: clamp(17.5px, 5.6cqw, 24px);
   font-weight: 500;
   line-height: 1.36;
   letter-spacing: -0.02em;
@@ -590,7 +641,8 @@ a {
 
 .u-venue-addr {
   font-family: var(--font-paperlogy);
-  font-size: clamp(16.5px, 4.6vw, 19.5px);
+  font-size: clamp(14.5px, calc(var(--unit-w) * 0.045), 19.5px);
+  font-size: clamp(14.5px, 4.5cqw, 19.5px);
   font-weight: 500;
   line-height: 1.42;
   letter-spacing: -0.02em;
@@ -624,9 +676,10 @@ a {
 }
 
 .subway-guide-text {
-  margin-top: 13px;
+  margin-top: clamp(9px, 1.5cqh, 13px);
   font-family: var(--font-paperlogy);
-  font-size: clamp(12.5px, 3.4vw, 14px);
+  font-size: clamp(11.5px, calc(var(--unit-w) * 0.034), 14.5px);
+  font-size: clamp(11.5px, 3.4cqw, 14.5px);
   font-weight: 500;
   line-height: 1.5;
   letter-spacing: -0.01em;
@@ -635,31 +688,34 @@ a {
 
 /* 주차 안내 영역 */
 .u-parking-group {
-  margin-top: 8px;
-  margin-bottom: 68px;
+  margin-top: 4px;
+  margin-bottom: clamp(44px, 8cqh, 68px);
 }
 
 .parking-title {
   font-family: var(--font-kr);
-  font-size: clamp(10.5px, 2.8vw, 12px);
+  font-size: clamp(10px, calc(var(--unit-w) * 0.028), 12.5px);
+  font-size: clamp(10px, 2.8cqw, 12.5px);
   font-weight: 300;
   letter-spacing: 0.02em;
   color: rgba(255, 255, 255, 0.62);
-  margin-bottom: 9px;
+  margin-bottom: clamp(6px, 1.1cqh, 10px);
 }
 
 .parking-desc {
   font-family: var(--font-paperlogy);
-  font-size: clamp(12.5px, 3.4vw, 14px);
+  font-size: clamp(11.5px, calc(var(--unit-w) * 0.0335), 14.5px);
+  font-size: clamp(11.5px, 3.35cqw, 14.5px);
   font-weight: 500;
   line-height: 1.62;
   letter-spacing: -0.015em;
   color: rgba(255, 255, 255, 0.9);
   word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 .parking-desc + .parking-desc {
-  margin-top: 14px;
+  margin-top: clamp(10px, 1.6cqh, 14px);
 }
 
 /* 하단 명지대학교 & 인더스트리얼디자인전공 공식 벡터 로고 영역 */
@@ -668,15 +724,15 @@ a {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-top: 14px;
-  padding-bottom: 24px;
+  padding-top: clamp(8px, 1.6cqh, 14px);
+  padding-bottom: clamp(16px, 2.8cqh, 24px);
 }
 
 .mju-logos-lockup {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 13px;
+  gap: clamp(10px, 1.6cqh, 13px);
   width: 100%;
   opacity: 0.92;
 }
@@ -690,12 +746,14 @@ a {
 }
 
 .logo-myongji {
-  width: clamp(82px, 24vw, 105px);
+  width: clamp(72px, calc(var(--unit-w) * 0.24), 108px);
+  width: clamp(72px, 24cqw, 108px);
   max-width: 60%;
 }
 
 .logo-mjuid {
-  width: clamp(80px, 23vw, 102px);
+  width: clamp(70px, calc(var(--unit-w) * 0.23), 104px);
+  width: clamp(70px, 23cqw, 104px);
   max-width: 60%;
 }
 
@@ -724,10 +782,16 @@ a {
 
 .map-action-sheet {
   width: 100%;
+  max-height: 90%;
+  overflow-y: auto;
   background: #121214;
   border-top: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 18px 18px 0 0;
-  padding: 20px 20px max(24px, env(safe-area-inset-bottom, 24px));
+  padding:
+    clamp(16px, 2.6cqh, 20px)
+    max(20px, env(safe-area-inset-right, 20px))
+    max(24px, env(safe-area-inset-bottom, 24px))
+    max(20px, env(safe-area-inset-left, 20px));
   transform: translateY(100%);
   transition: transform 0.34s var(--ease-out-expo);
 }
@@ -746,13 +810,13 @@ a {
 }
 
 .map-action-venue {
-  font-size: 15px;
+  font-size: clamp(14px, 3.8cqw, 15.5px);
   font-weight: 600;
   color: #FFFFFF;
 }
 
 .map-action-addr {
-  font-size: 13px;
+  font-size: clamp(12px, 3.3cqw, 13.5px);
   font-weight: 300;
   color: rgba(255, 255, 255, 0.68);
 }
@@ -765,10 +829,10 @@ a {
 
 .map-act-btn {
   width: 100%;
-  padding: 13px 16px;
+  padding: clamp(11px, 1.8cqh, 13px) 16px;
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.06);
-  font-size: 14px;
+  font-size: clamp(13px, 3.6cqw, 14.5px);
   font-weight: 400;
   color: #FFFFFF;
   text-align: center;
@@ -791,24 +855,96 @@ a {
    ===================================================================== */
 #toast {
   position: fixed;
-  bottom: 36px;
+  bottom: max(28px, calc(env(safe-area-inset-bottom, 12px) + 18px));
   left: 50%;
   transform: translate(-50%, 40px);
   z-index: 100;
+  max-width: calc(100vw - 32px);
   padding: 10px 18px;
   border-radius: 999px;
   background: rgba(24, 24, 28, 0.95);
   border: 1px solid rgba(255, 255, 255, 0.18);
   color: #FFFFFF;
-  font-size: 13px;
+  font-size: clamp(12px, 3.3cqw, 13.5px);
   font-weight: 400;
+  text-align: center;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.28s ease, transform 0.28s var(--ease-out-expo);
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 #toast.is-visible {
   opacity: 1;
   transform: translate(-50%, 0);
+}
+
+/* =====================================================================
+   MULTI-RESOLUTION & ASPECT-RATIO ADAPTATION RULES
+   (초소형 폴드/SE, 짧은 세로 인앱 브라우저, 가로 모드, 폴더블 펼침 등 대응)
+   ===================================================================== */
+
+/* 1) 세로 높이가 짧은 모바일 뷰포트 (iPhone SE, 인앱 브라우저 하단바, 분할 화면 등) */
+@media (max-height: 640px) {
+  .story-block--left {
+    margin-top: clamp(72px, 21vh, 140px);
+  }
+  .story-block--right {
+    margin-top: clamp(78px, 23vh, 155px);
+  }
+  .story-gap {
+    height: 16px;
+  }
+  .u-info-group {
+    margin-bottom: 30px;
+  }
+  .u-parking-group {
+    margin-bottom: 40px;
+  }
+}
+
+/* 2) 모바일 가로 모드 (Landscape) 또는 극단적으로 낮은 높이 */
+@media (max-height: 480px) {
+  .page-prologue-left,
+  .page-prologue-right {
+    justify-content: center;
+    padding-top: max(44px, env(safe-area-inset-top, 44px));
+  }
+  .story-block--left,
+  .story-block--right {
+    margin-top: 0;
+  }
+  .story-text,
+  .invitation-text {
+    font-size: clamp(12px, 3.6vh, 15px);
+    line-height: 1.55;
+  }
+  .story-gap {
+    height: 12px;
+  }
+  .cover-main-title {
+    width: clamp(130px, 42vh, 210px);
+  }
+  .unified-info-scroll {
+    padding-top: max(54px, calc(env(safe-area-inset-top, 12px) + 40px));
+  }
+}
+
+/* 3) 초소형 가로 해상도 (Galaxy Z Fold 커버 디스플레이 280px ~ iPhone SE 320px) */
+@media (max-width: 340px) {
+  .page-prologue-left,
+  .page-prologue-right {
+    padding-left: 6%;
+    padding-right: 6%;
+  }
+  .scene {
+    padding-left: 6%;
+    padding-right: 6%;
+  }
+  .unified-info-scroll {
+    padding-left: 6%;
+    padding-right: 6%;
+  }
 }
