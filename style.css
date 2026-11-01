@@ -32,12 +32,15 @@
 }
 
 html, body {
+  position: fixed;
+  inset: 0;
   width: 100%;
   height: 100%;
-  height: 100dvh;
+  min-height: 100dvh;
+  min-height: -webkit-fill-available;
   overflow: hidden;
   overscroll-behavior: none;
-  background-color: #080808;
+  background-color: var(--white);
   color: var(--white);
   font-family: var(--font-kr);
   -webkit-font-smoothing: antialiased;
@@ -47,6 +50,10 @@ html, body {
   text-size-adjust: 100%;
   user-select: none;
   -webkit-user-select: none;
+}
+
+body.is-dark-stage {
+  background-color: var(--black);
 }
 
 button {
@@ -63,27 +70,37 @@ a {
 }
 
 /* =====================================================================
-   MAIN MOBILE FRAME (모든 모바일 해상도 대응 컨테이너)
+   MAIN MOBILE FRAME (모든 모바일 해상도 대응 컨테이너 — 상하 레터박스 완전 제거)
    ===================================================================== */
 .invitation-frame {
-  position: relative;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
   width: 100%;
   max-width: var(--frame-max-w);
-  height: 100vh;
-  height: 100dvh;
-  height: var(--app-h, 100dvh);
-  margin: 0 auto;
+  height: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0;
   background-color: var(--white);
   overflow: hidden;
   container-type: size;
   container-name: invitation;
 }
 
-/* 모바일/태블릿 터치 디바이스에서는 화면 가로폭 제한 없이 기기 해상도에 100% 밀착 */
-@media (hover: none) and (pointer: coarse) and (max-width: 768px) {
+/* 모바일/태블릿 화면에서는 가로/세로 여백 없이 뷰포트 전체 100% 밀착 */
+@media (max-width: 768px) {
   :root {
     --frame-max-w: 100vw;
     --unit-w: 100vw;
+  }
+  .invitation-frame {
+    left: 0;
+    right: 0;
+    transform: none;
+    max-width: none;
   }
 }
 
@@ -135,14 +152,17 @@ a {
 }
 
 .cover-bg-img {
-  width: min(88%, 88cqw);
-  max-height: 75cqh;
+  width: max(92%, 68vh);
+  width: max(92cqw, 68cqh);
+  max-width: none;
+  max-height: none;
   height: auto;
   aspect-ratio: 637 / 628;
-  object-fit: contain;
+  object-fit: cover;
+  flex-shrink: 0;
   opacity: 0;
-  /* 고정 px(-200px) 대신 이미지 자체 크기 비율(%)을 사용하여 모든 해상도에서 동일한 구도 유지 */
-  transform: translate(-58.3%, 53.8%) scale(3);
+  /* 어떤 화면 비율(21:9 장축 스마트폰 포함)에서도 상하좌우 레터박스 없이 화면 전체를 100% 덮도록 스케일링 */
+  transform: translate(-48%, 38%) scale(3.4);
   transform-origin: center center;
   will-change: transform, opacity;
   pointer-events: none;
@@ -515,12 +535,15 @@ a {
 }
 
 .invitation-bg-graphic img {
-  width: min(88%, 88cqw);
-  max-height: 75cqh;
+  width: max(92%, 68vh);
+  width: max(92cqw, 68cqh);
+  max-width: none;
+  max-height: none;
   height: auto;
   aspect-ratio: 637 / 628;
-  object-fit: contain;
-  transform: translate(-58.3%, 53.8%) scale(3);
+  object-fit: cover;
+  flex-shrink: 0;
+  transform: translate(-48%, 38%) scale(3.4);
   transform-origin: center center;
   pointer-events: none;
   user-select: none;
@@ -653,19 +676,19 @@ a {
 /* 약도 영역 */
 .map-crop-box {
   width: 100%;
-  aspect-ratio: 870 / 409;
+  aspect-ratio: 870 / 408.462;
   overflow: hidden;
   position: relative;
   cursor: pointer;
-  background-color: #141414;
+  background-color: transparent;
 }
 
 .map-bw-img {
-  width: 102%;
-  height: auto;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   display: block;
-  margin-top: -17.2%;
-  margin-left: -1.8%;
+  margin: 0;
   filter: grayscale(100%);
   -webkit-filter: grayscale(100%);
   transition: opacity 0.2s ease;

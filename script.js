@@ -157,7 +157,7 @@
     sGreyCtx.clearRect(0, 0, viewW, viewH);
     sRedCtx.clearRect(0, 0, viewW, viewH);
 
-    const drawSize = Math.max(viewW * 2.13, viewH * 1.16);
+    const drawSize = Math.max(viewW * 2.25, viewH * 1.50);
     const drawX = -drawSize * 0.475;
     const drawY = viewH - drawSize * 0.70;
 
@@ -540,6 +540,7 @@
     scenes.forEach((sc) => sc.classList.remove('is-active'));
     infoModal.classList.add('is-open');
     infoModal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('is-dark-stage');
     if (themeColorMeta) themeColorMeta.setAttribute('content', '#000000');
 
     // 검정 배경이 스며들며 첫 씬 텍스트가 경쾌하고 우아하게 등장
@@ -555,6 +556,7 @@
     isModalOpen = false;
     infoModal.classList.remove('is-open');
     infoModal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('is-dark-stage');
     if (themeColorMeta) themeColorMeta.setAttribute('content', '#ffffff');
     scheduleAutoTransition(2500);
   }
